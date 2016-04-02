@@ -1,19 +1,34 @@
-happy = new Mongo.Collection('happies');
+SmileList = new Mongo.Collection('smiles');
 
 if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault('counter', 0);
 
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get('counter');
+  Template.listSmiles.helpers({
+    smiles: function () {
+      return SmileList.find({}).fetch();
     }
   });
 
-  Template.hello.events({
-    'click button': function () {
-      // increment the counter when button is clicked
-      Session.set('counter', Session.get('counter') + 1);
+  Template.addSmileForm.onCreated(function () { 
+    this.autorun(function () {
+      var currentLocation = Geolocation.latLng();
+      Session.set("location", currentLocation);
+    });
+  });
+  
+  Template.addSmileForm.events({
+    'submit .addSmile': function (event) {
+      event.preventDefault();
+      var timeVar = Date.now();
+      var location = Session.get("location");
+      var descriptionVar = event.target.smileDescription.value;
+
+      SmileList.insert({
+       time: timeVar,
+       lat: location.lat,
+       long: location.lng,
+       description: descriptionVar,
+      });
+      event.target.smileDescription.value = "";
     }
   });
 }

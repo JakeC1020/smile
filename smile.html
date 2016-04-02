@@ -3,8 +3,27 @@
 </head>
 
 <body>
+{{> listSmiles}}
+{{> addSmileForm}}
 </body>
 
-<template name="">
-	
+<template name="addSmileForm">
+	<form class="addSmile">
+		<input type="text" name="smileDescription">
+		<button type="submit">Submit</button>
+	</form>
 </template>
+
+<template name="listSmiles">
+	{{#each smiles}}
+		<div>
+			<ul>
+				<li>{{time}}</li>
+				<li>{{lat}}</li>
+				<li>{{long}}</li>
+				<li>{{description}}</li>
+			</ul>	
+		</div>
+	{{/each}}
+</template>
+
