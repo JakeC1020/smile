@@ -13,8 +13,8 @@ Router.route('/dashboard', function () {
 Router.route('/smile', function () {
   this.render('smile');
 });
-Router.route('/input', function () {
-  var queryVars = Router.current().params.query;
+/*Router.route('/input', function () {
+  var queryVars = this.request.query;
   var timeVar = Date.now();
   var descriptionVar = "No description";
   if (queryVars.lat && queryVars.long) {
@@ -25,7 +25,30 @@ Router.route('/input', function () {
      description: descriptionVar,
     });
   }
-}, {where: 'server'});
+  this.render('dashboard');
+}, {where: 'server'});*/
+
+Router.route('/input', {
+  where: 'server',
+  action: function () {
+    var lat = this.request.query.lat;
+    var long = this.request.query.long;
+    var resp = {'recieved' : "true"};
+    var timeVar = Date.now();
+    var descriptionVar = "No description";
+    this.response.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+    this.response.end(JSON.stringify(resp));
+    if (lat && long) {
+      SmileList.insert({
+        time: timeVar,
+        lat: lat,
+        long: long,
+        description: descriptionVar
+      });
+    }
+  }
+});
+
 Router.route('/add', function () {
   this.render('addSmileForm');
 });
