@@ -16,6 +16,9 @@ Router.route('/smile', function () {
 Router.route('/input/', function () {
   this.render('input');
 });
+Router.route('/add', function () {
+  this.render('addSmileForm');
+});
 
 // ***** Start Meteor Location Conditionals *****
 if (Meteor.isClient) {
@@ -26,10 +29,13 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.addSmileForm.onCreated(function () {
+  Template.addSmileForm.onRendered(function () {
     this.autorun(function () {
       var currentLocation = Geolocation.latLng();
-      Session.set("location", currentLocation);
+      if (currentLocation != "null") {
+        Session.set("location", currentLocation);
+      }
+      console.log(currentLocation);
     });
   });
 
@@ -67,7 +73,7 @@ if (Meteor.isClient) {
   google.charts.load("current", {packages:["corechart"]});
   google.charts.setOnLoadCallback(drawChart);
   function drawChart() {
-    var data = google.visualization.arrayToDataTable();//pass array of data here
+    var data = google.visualization.arrayToDataTable([]);//pass array of data here
 
     var options = {
       title: 'Lengths of dinosaurs, in meters',
