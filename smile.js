@@ -14,6 +14,7 @@ Router.route('/smile', function () {
   this.render('smile');
 });
 Router.route('/input', function () {
+  var queryVars = Router.current().params.query;
   var timeVar = Date.now();
   var descriptionVar = "No description";
   if (queryVars.lat && queryVars.long) {
