@@ -3,7 +3,8 @@ SmileList = new Mongo.Collection('smiles');
 
 // ***** Routes *****
 Router.route('/', function () {
-  this.render('dashboard');
+  //this.render('dashboard');
+  this.render('about')
 });
 
 Router.route('/dashboard', function () {
@@ -71,10 +72,12 @@ if (Meteor.isClient) {
      return smiles;
     }
   });
-  Template.editSmile.events({
-     'submit li': function (event) {
-         var description = event.target.smileDescription.value;
-         console.log(description);
+  Template.editSmiles.events({
+     'keyup [name=smileDescrip]': function (event) {
+         var documentId = this._id;
+         var smileDescrip = $(event.target).val();
+         SmileList.update({_id: documentId}, {$set: {description: smileDescrip}});
+         console.log('Description changed to: ' + smileDescrip);
      }
   });
 

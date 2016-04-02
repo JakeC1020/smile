@@ -11,9 +11,7 @@
 </body>
 
 <template name="topNav">
-    <div class="jumbotron">
-        <h1>Hello, {user}!</h1>
-        <h2>Let's check out your recent smiles.</h2>
+    <div class="container">
         <nav class="navbar navbar-default navbar-fixed-top">
             <ul class="nav navbar-nav">
                 <li><a href="/">About</a></li>
@@ -21,6 +19,10 @@
                 <li><a href="/edit">Edit your smiles</a></li>
             </ul>
         </nav>
+    </div>
+    <div class="jumbotron">
+        <h1>Hello, {user}!</h1>
+        <h2>Let's check out your recent smiles.</h2>
     </div>
 </template>
 
@@ -63,12 +65,7 @@
 		<div class="editList">
 			<ul>
 				<li>{{realTime}}</li>
-                <!--
-				<li>{{lat}}</li>
-				<li>{{long}}</li>
-                -->
-				<li>Edit Description: <input type="text" name="smileDescription" placeholder="{{description}}"></li>
-                <button type="submit">submit</button>
+				<li>Edit Description: <input type="text" name="smileDescrip" value="{{description}}"></li>
                 <li></li>
 			</ul>
 		</div>
