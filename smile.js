@@ -49,7 +49,23 @@ if (Meteor.isClient) {
       event.target.smileDescription.value = "";
     }
   });
+
+  Template.input.onCreated(function () { 
+    this.autorun(function () {
+      var queryVars = Router.current().params.query;
+      var timeVar = Date.now();
+      var descriptionVar = "No description";
+      SmileList.insert({
+       time: timeVar,
+       lat: queryVars.lat,
+       long: queryVars.lng,
+       description: descriptionVar,
+      });
+    });
+  });
 }
+
+
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
