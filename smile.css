@@ -26,3 +26,17 @@ h2 {
 .dashRow {
     margin-top:3em;
 }
+input-placeholder {
+    text-color: black;
+}
+.editList {
+    width: 100%;
+}
+ul {
+    margin: auto;
+    list-style: none;
+}
+li input {
+    border-width: 0;
+    outline: none;
+}

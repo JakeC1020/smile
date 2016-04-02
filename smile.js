@@ -8,6 +8,40 @@ Router.route('/', function () {
 
 Router.route('/dashboard', function () {
   this.render('dashboard');
+  google.charts.load('current', {'packages':['bar']});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+      var timeArray = []
+      SmileList.find().forEach(function(obj){
+          var date = new Date(obj.time);
+          var hours = date.getHours()+7;
+          var found = false;
+          for (var i=0; i<timeArray.length; i++) {
+              if (timeArray[i][0][0] == hours) {
+                  timeArray[i][1] += 1;
+                  found = true;
+              }
+          }
+          if (!found) {
+              timeArray.push([[hours,0,0],1]);
+          }
+      });
+        var data = new google.visualization.DataTable();
+        data.addColumn('timeofday', 'Time of Day');
+        data.addColumn('number', 'Number of smiles');
+
+        data.addRows(timeArray);
+
+        var options = google.charts.Bar.convertOptions({
+          title: 'Number of smiles at each hour',
+          height: 450,
+          legend: { position: 'none' }
+        });
+
+        var chart = new google.charts.Bar(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+  }
 });
 
 Router.route('/smile', function () {
@@ -19,14 +53,29 @@ Router.route('/input/', function () {
 Router.route('/add', function () {
   this.render('addSmileForm');
 });
+Router.route('/edit', function() {
+    this.render('editSmiles');
+});
 
 // ***** Start Meteor Location Conditionals *****
 if (Meteor.isClient) {
 
-  Template.listSmiles.helpers({
+  Template.editSmiles.helpers({
     smiles: function () {
-      return SmileList.find({}).fetch();
+      var smiles = SmileList.find({}).fetch();
+      smiles.forEach(function(obj){
+         var time = obj.time-3600*1000*7;
+         var date = new Date(time).toGMTString();
+         obj.realTime = date.substr(0,22);
+     });
+     return smiles;
     }
+  });
+  Template.editSmile.events({
+     'submit li': function (event) {
+         var description = event.target.smileDescription.value;
+         console.log(description);
+     }
   });
 
   Template.addSmileForm.onRendered(function () {
@@ -69,20 +118,6 @@ if (Meteor.isClient) {
       });
     });
   });
-  // - HISTOGRAM
-  google.charts.load("current", {packages:["corechart"]});
-  google.charts.setOnLoadCallback(drawChart);
-  function drawChart() {
-    var data = google.visualization.arrayToDataTable([]);//pass array of data here
-
-    var options = {
-      title: 'Lengths of dinosaurs, in meters',
-      legend: { position: 'none' },
-    };
-
-    var chart = new google.visualization.Histogram(document.getElementById('chart_div'));
-    chart.draw(data, options);
-  }
 }
 
 if (Meteor.isServer) {

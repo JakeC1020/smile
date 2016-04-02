@@ -16,9 +16,9 @@
         <h2>Let's check out your recent smiles.</h2>
         <nav class="navbar navbar-default navbar-fixed-top">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">About</a></li>
-                <li><a href="#somewhere">Your smiles</a></li>
-                <li><a href="#somewehereElse">Edit your smiles</a></li>
+                <li><a href="/">About</a></li>
+                <li><a href="/dashboard">Your smiles</a></li>
+                <li><a href="/edit">Edit your smiles</a></li>
             </ul>
         </nav>
     </div>
@@ -58,14 +58,18 @@
 	</form>
 </template>
 
-<template name="listSmiles">
+<template name="editSmiles">
 	{{#each smiles}}
-		<div>
+		<div class="editList">
 			<ul>
-				<li>{{time}}</li>
+				<li>{{realTime}}</li>
+                <!--
 				<li>{{lat}}</li>
 				<li>{{long}}</li>
-				<li>{{description}}</li>
+                -->
+				<li>Edit Description: <input type="text" name="smileDescription" placeholder="{{description}}"></li>
+                <button type="submit">submit</button>
+                <li></li>
 			</ul>
 		</div>
 	{{/each}}
