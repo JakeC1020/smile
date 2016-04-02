@@ -1,5 +1,23 @@
+// ***** Mongo Collections *****
 SmileList = new Mongo.Collection('smiles');
 
+// ***** Routes *****
+Router.route('/', function () {
+  this.render('dashboard');
+});
+
+Router.route('/dashboard', function () {
+  this.render('dashboard');
+});
+
+Router.route('/smile', function () {
+  this.render('smile');
+});
+Router.route('/input/', function () {
+  this.render('input');
+});
+
+// ***** Start Meteor Location Conditionals *****
 if (Meteor.isClient) {
 
   Template.listSmiles.helpers({

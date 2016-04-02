@@ -22,3 +22,4 @@ check
 standard-minifier-css
 standard-minifier-js
 mdg:geolocation
+iron:router
