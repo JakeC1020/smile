@@ -1,11 +1,56 @@
 <head>
-  <title>Smile :)</title>
+    <title>Smile :)</title>
+    <link href='https://fonts.googleapis.com/css?family=Raleway:400,100,300,200,600' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 </head>
 
-<body>
-{{> listSmiles}}
-{{> addSmileForm}}
+<body class="body">
+    {{> topNav}}
+    {{> dashboard}}
 </body>
+
+<template name="topNav">
+    <div class="jumbotron">
+        <h1>Hello, {user}!</h1>
+        <h2>Let's check out your recent smiles.</h2>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">About</a></li>
+                <li><a href="#somewhere">Your smiles</a></li>
+                <li><a href="#somewehereElse">Edit your smiles</a></li>
+            </ul>
+        </nav>
+    </div>
+</template>
+
+<template name="dashboard" class="dashboard">
+    <div class="container">
+        <div class="dashRow row">
+            <div class="col-md-6">
+                <div id="chart_div" class="histogram"></div>
+            </div>
+            <div class="col-md-6">
+                <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d12225.782767547542!2d-105.26044095!3d39.9984911!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1459616150330" frameborder="0" style="border:0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="login">
+	<h1>Hey!</h1>
+    <h2>Who are you?</h2>
+    <form>
+        <input type="text" name="username">
+        <input type="password" name="password">
+        <input type="submit" value="Log in">
+    </form>
+</template>
+
+<template name="input">
+
+</template>
 
 <template name="addSmileForm">
 	<form class="addSmile">
@@ -22,12 +67,7 @@
 				<li>{{lat}}</li>
 				<li>{{long}}</li>
 				<li>{{description}}</li>
-			</ul>	
+			</ul>
 		</div>
 	{{/each}}
 </template>
-
-<template name="input">
-	
-</template>
-

@@ -26,13 +26,13 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.addSmileForm.onCreated(function () { 
+  Template.addSmileForm.onCreated(function () {
     this.autorun(function () {
       var currentLocation = Geolocation.latLng();
       Session.set("location", currentLocation);
     });
   });
-  
+
   Template.addSmileForm.events({
     'submit .addSmile': function (event) {
       event.preventDefault();
@@ -50,7 +50,7 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.input.onCreated(function () { 
+  Template.input.onCreated(function () {
     this.autorun(function () {
       var queryVars = Router.current().params.query;
       var timeVar = Date.now();
@@ -63,9 +63,21 @@ if (Meteor.isClient) {
       });
     });
   });
+  // - HISTOGRAM
+  google.charts.load("current", {packages:["corechart"]});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable();//pass array of data here
+
+    var options = {
+      title: 'Lengths of dinosaurs, in meters',
+      legend: { position: 'none' },
+    };
+
+    var chart = new google.visualization.Histogram(document.getElementById('chart_div'));
+    chart.draw(data, options);
+  }
 }
-
-
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
