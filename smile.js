@@ -13,9 +13,19 @@ Router.route('/dashboard', function () {
 Router.route('/smile', function () {
   this.render('smile');
 });
-Router.route('/input/', function () {
-  this.render('input');
-});
+Router.route('/input', function () {
+  var queryVars = Router.current().params.query;
+  var timeVar = Date.now();
+  var descriptionVar = "No description";
+  if (queryVars.lat && queryVars.long) {
+    SmileList.insert({
+     time: timeVar,
+     lat: queryVars.lat,
+     long: queryVars.long,
+     description: descriptionVar,
+    });
+  }
+}), {where: 'server'};
 Router.route('/add', function () {
   this.render('addSmileForm');
 });
@@ -56,19 +66,22 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.input.onCreated(function () {
+  /*Template.input.onCreated(function () {
     this.autorun(function () {
       var queryVars = Router.current().params.query;
+      console.log(queryVars);
       var timeVar = Date.now();
       var descriptionVar = "No description";
-      SmileList.insert({
-       time: timeVar,
-       lat: queryVars.lat,
-       long: queryVars.lng,
-       description: descriptionVar,
-      });
+      if (queryVars.lat && queryVars.long) {
+        SmileList.insert({
+         time: timeVar,
+         lat: queryVars.lat,
+         long: queryVars.long,
+         description: descriptionVar,
+        });
+      }
     });
-  });
+  });*/
   // - HISTOGRAM
   google.charts.load("current", {packages:["corechart"]});
   google.charts.setOnLoadCallback(drawChart);
