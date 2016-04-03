@@ -5,7 +5,9 @@ var alreadyRan = false;
 Router.route('/', function () {
   this.render('dashboard');
 });
-
+Router.route('/about'), function () {
+    this.render('about');
+}
 Router.route('/dashboard', function () {
   this.render('dashboard');
   //alreadyRan = false;
