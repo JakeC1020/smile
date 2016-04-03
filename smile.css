@@ -92,3 +92,6 @@ a {
 a:hover {
     color: #607D8B !important;
 }
+li input {
+    width:350px;
+}

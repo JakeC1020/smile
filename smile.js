@@ -9,7 +9,7 @@ Router.route('/about', function () {
 });
 if (Meteor.isClient) {
     firstRun = true;
-    numRuns = 0;
+    var numRuns = 0;
 }
 Router.route('/dashboard', function () {
     this.render('dashboard');
@@ -27,7 +27,7 @@ Router.route('/dashboard', function () {
               $().ready(function() {
                   SmileList.find().forEach(function(obj){
                     date = new Date(obj.time);
-                    hours = date.getHours()+7;
+                    hours = date.getHours()-1;
                     found = false;
                     for (var i=0; i<timeArray.length; i++) {
                         if (timeArray[i][0][0] == hours) {
@@ -55,7 +55,7 @@ Router.route('/dashboard', function () {
               chart.draw(data, options);
             }
         }
-        if (numRuns % 2 == 0) {
+        if (numRuns % 2 != 0) {
             //console.log("numRuns:"+numRuns);
             //location.reload();
             //window.location.replace('/dashboard');
