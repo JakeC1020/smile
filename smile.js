@@ -1,22 +1,26 @@
 // ***** Mongo Collections *****
 SmileList = new Mongo.Collection('smiles');
-
+var alreadyRan = false;
 // ***** Routes *****
 Router.route('/', function () {
-  //this.render('dashboard');
-  this.render('about')
+  this.render('dashboard');
 });
 
 Router.route('/dashboard', function () {
   this.render('dashboard');
-  google.charts.load('current', {'packages':['bar']});
+  //alreadyRan = false;
+  if (!alreadyRan) {
+      google.charts.load('current', {'packages':['bar']});
+      console.log("test");
+  }
+      // ***** Histogram *****
   google.charts.setOnLoadCallback(drawChart);
   function drawChart() {
-      var timeArray = []
+      timeArray = [];
       SmileList.find().forEach(function(obj){
-          var date = new Date(obj.time);
-          var hours = date.getHours()+7;
-          var found = false;
+          date = new Date(obj.time);
+          hours = date.getHours()+7;
+          found = false;
           for (var i=0; i<timeArray.length; i++) {
               if (timeArray[i][0][0] == hours) {
                   timeArray[i][1] += 1;
@@ -27,22 +31,19 @@ Router.route('/dashboard', function () {
               timeArray.push([[hours,0,0],1]);
           }
       });
-        var data = new google.visualization.DataTable();
+        data = new google.visualization.DataTable();
         data.addColumn('timeofday', 'Time of Day');
         data.addColumn('number', 'Number of smiles');
-
         data.addRows(timeArray);
-
-        var options = google.charts.Bar.convertOptions({
+        options = google.charts.Bar.convertOptions({
           title: 'Number of smiles at each hour',
           height: 450,
-          legend: { position: 'none' }
+          legend: { position: 'none' },
+          colors: ['#80DEEA']
         });
-
-        var chart = new google.charts.Bar(document.getElementById('chart_div'));
-
+        chart = new google.charts.Bar(document.getElementById('chart_div'));
         chart.draw(data, options);
-  }
+    }
 });
 
 Router.route('/smile', function () {
@@ -60,10 +61,14 @@ Router.route('/edit', function() {
 
 // ***** Start Meteor Location Conditionals *****
 if (Meteor.isClient) {
-
+    Template.dashboard.events({
+        'click #dashboard': function() {
+            document.location.reload(true);
+        }
+    });
   Template.editSmiles.helpers({
     smiles: function () {
-      var smiles = SmileList.find({}).fetch();
+      var smiles = SmileList.find({}, {sort: {time: -1}}).fetch();
       smiles.forEach(function(obj){
          var time = obj.time-3600*1000*7;
          var date = new Date(time).toGMTString();
@@ -126,5 +131,8 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // code to run on server at startup
+  });
+  SmileList.find().forEach(function(obj){
+    console.log(obj.description);
   });
 }

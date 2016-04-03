@@ -12,15 +12,16 @@
 
 <template name="topNav">
     <div class="container">
-        <nav class="navbar navbar-default navbar-fixed-top">
+        <nav class="navbar navbar-default navbar-fixed-top ">
+            <img src="http://i.imgur.com/mEcPpqr.png" height="50" width="50" class="image2">
             <ul class="nav navbar-nav">
-                <li><a href="/">About</a></li>
+                <li><a href="/about">About</a></li>
                 <li><a href="/dashboard">Your smiles</a></li>
                 <li><a href="/edit">Edit your smiles</a></li>
             </ul>
         </nav>
     </div>
-    <div class="jumbotron">
+    <div class="header jumbotron">
         <h1>Hello, {user}!</h1>
         <h2>Let's check out your recent smiles.</h2>
     </div>
@@ -33,7 +34,7 @@
                 <div id="chart_div" class="histogram"></div>
             </div>
             <div class="col-md-6">
-                <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d12225.782767547542!2d-105.26044095!3d39.9984911!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1459616150330" frameborder="0" style="border:0" allowfullscreen></iframe>
+                <img src="http://i.imgur.com/kW2Lw35.png" class="image">
             </div>
         </div>
     </div>
@@ -62,6 +63,7 @@
 
 <template name="editSmiles">
 	{{#each smiles}}
+    <center>
 		<div class="editList">
 			<ul>
 				<li>{{realTime}}</li>
@@ -69,5 +71,10 @@
                 <li></li>
 			</ul>
 		</div>
+    </center>
 	{{/each}}
+</template>
+
+<template name="about">
+    this is a test yo
 </template>
