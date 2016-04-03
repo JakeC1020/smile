@@ -1,6 +1,5 @@
 // ***** Mongo Collections *****
 SmileList = new Mongo.Collection('smiles');
-var alreadyRan = false;
 // ***** Routes *****
 Router.route('/', function () {
   this.render('about');
@@ -11,10 +10,8 @@ Router.route('/about'), function () {
 Router.route('/dashboard', function () {
   this.render('dashboard');
   //alreadyRan = false;
-  if (!alreadyRan) {
-      google.charts.load('current', {'packages':['bar']});
+    google.charts.load('current', {'packages':['bar']});
       console.log("test");
-  }
       // ***** Histogram *****
   google.charts.setOnLoadCallback(drawChart);
   function drawChart() {
@@ -83,11 +80,11 @@ Router.route('/edit', function() {
 
 // ***** Start Meteor Location Conditionals *****
 if (Meteor.isClient) {
-  Template.listSmiles.helpers({
-      smiles: function () {
+  Template.editSmiles.helpers({
+      'smiles': function () {
         var smiles = SmileList.find({}, {sort: {time: -1}}).fetch();
         smiles.forEach(function(obj){
-           var time = obj.time-3600*1000*7;
+           var time = obj.time-3600*1000*6;
            var date = new Date(time).toGMTString();
            obj.realTime = date.substr(0,22);
        });
