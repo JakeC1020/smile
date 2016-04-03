@@ -7,12 +7,18 @@ Router.route('/', function () {
 Router.route('/about', function () {
     this.render('about');
 });
+if (Meteor.isClient) {
+    firstRun = true;
+    numRuns = 0;
+}
 Router.route('/dashboard', function () {
     this.render('dashboard');
     if (Meteor.isClient) {
-        
-        google.charts.load('current', {'packages':['bar']});
-        google.charts.setOnLoadCallback(drawChart);
+        if (firstRun == true) {
+            google.charts.load('current', {'packages':['bar']});
+            google.charts.setOnLoadCallback(drawChart);
+            firstRun = false;
+        }
         console.log("histogram should load");
           // ***** Histogram *****
       function drawChart() {
@@ -45,6 +51,11 @@ Router.route('/dashboard', function () {
           chart.draw(data, options);
         }
     }
+    if (numRuns % 2 != 0) {
+        location.reload();
+    }
+    numRuns++;
+    console.log(numRuns);
 });
 
 Router.route('/smile', function () {
