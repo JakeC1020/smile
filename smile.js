@@ -1,32 +1,56 @@
 // ***** Mongo Collections *****
 SmileList = new Mongo.Collection('smiles');
-
+var alreadyRan = false;
 // ***** Routes *****
 Router.route('/', function () {
-  this.render('dashboard');
+  this.render('about');
 });
-
+Router.route('/about'), function () {
+    this.render('about');
+}
 Router.route('/dashboard', function () {
   this.render('dashboard');
+  //alreadyRan = false;
+  if (!alreadyRan) {
+      google.charts.load('current', {'packages':['bar']});
+      console.log("test");
+  }
+      // ***** Histogram *****
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+      timeArray = [];
+      SmileList.find().forEach(function(obj){
+          date = new Date(obj.time);
+          hours = date.getHours()+7;
+          found = false;
+          for (var i=0; i<timeArray.length; i++) {
+              if (timeArray[i][0][0] == hours) {
+                  timeArray[i][1] += 1;
+                  found = true;
+              }
+          }
+          if (!found) {
+              timeArray.push([[hours,0,0],1]);
+          }
+      });
+        data = new google.visualization.DataTable();
+        data.addColumn('timeofday', 'Time of Day');
+        data.addColumn('number', 'Number of smiles');
+        data.addRows(timeArray);
+        options = google.charts.Bar.convertOptions({
+          title: 'Number of smiles at each hour',
+          height: 450,
+          legend: { position: 'none' },
+          colors: ['#80DEEA']
+        });
+        chart = new google.charts.Bar(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
 });
 
 Router.route('/smile', function () {
   this.render('smile');
 });
-/*Router.route('/input', function () {
-  var queryVars = this.request.query;
-  var timeVar = Date.now();
-  var descriptionVar = "No description";
-  if (queryVars.lat && queryVars.long) {
-    SmileList.insert({
-     time: timeVar,
-     lat: queryVars.lat,
-     long: queryVars.long,
-     description: descriptionVar,
-    });
-  }
-  this.render('dashboard');
-}, {where: 'server'});*/
 
 Router.route('/input', {
   where: 'server',
@@ -53,13 +77,35 @@ Router.route('/input', {
 Router.route('/add', function () {
   this.render('addSmileForm');
 });
+Router.route('/edit', function() {
+    this.render('editSmiles');
+});
 
 // ***** Start Meteor Location Conditionals *****
 if (Meteor.isClient) {
   Template.listSmiles.helpers({
-    smiles: function () {
-      return SmileList.find({}).fetch();
-    }
+      smiles: function () {
+        var smiles = SmileList.find({}, {sort: {time: -1}}).fetch();
+        smiles.forEach(function(obj){
+           var time = obj.time-3600*1000*7;
+           var date = new Date(time).toGMTString();
+           obj.realTime = date.substr(0,22);
+       });
+       return smiles;
+      }
+  });
+    Template.dashboard.events({
+        'click #dashboard': function() {
+            document.location.reload(true);
+        }
+    });
+  Template.editSmiles.events({
+     'keyup [name=smileDescrip]': function (event) {
+         var documentId = this._id;
+         var smileDescrip = $(event.target).val();
+         SmileList.update({_id: documentId}, {$set: {description: smileDescrip}});
+         console.log('Description changed to: ' + smileDescrip);
+     }
   });
 
   Template.addSmileForm.onRendered(function () {
@@ -88,37 +134,6 @@ if (Meteor.isClient) {
       event.target.smileDescription.value = "";
     }
   });
-
-  /*Template.input.onCreated(function () {
-    this.autorun(function () {
-      var queryVars = Router.current().params.query;
-      console.log(queryVars);
-      var timeVar = Date.now();
-      var descriptionVar = "No description";
-      if (queryVars.lat && queryVars.long) {
-        SmileList.insert({
-         time: timeVar,
-         lat: queryVars.lat,
-         long: queryVars.long,
-         description: descriptionVar,
-        });
-      }
-    });
-  });*/
-  // - HISTOGRAM
-  google.charts.load("current", {packages:["corechart"]});
-  google.charts.setOnLoadCallback(drawChart);
-  function drawChart() {
-    var data = google.visualization.arrayToDataTable([]);//pass array of data here
-
-    var options = {
-      title: 'Lengths of dinosaurs, in meters',
-      legend: { position: 'none' },
-    };
-
-    var chart = new google.visualization.Histogram(document.getElementById('chart_div'));
-    chart.draw(data, options);
-  }
 }
 
 if (Meteor.isServer) {
