@@ -55,7 +55,7 @@ Router.route('/dashboard', function () {
         }
     }
     if (numRuns % 2 != 0) {
-        window.location.reaplce(/dashboard);
+        window.location.replace('/dashboard');
     }
     numRuns++;
     console.log(numRuns);
