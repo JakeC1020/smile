@@ -38,6 +38,7 @@ Router.route('/input', {
     var descriptionVar = "No description";
     this.response.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
     this.response.end(JSON.stringify(resp));
+    console.log(lat + " " + long);
     if (lat && long) {
       SmileList.insert({
         time: timeVar,
@@ -55,7 +56,6 @@ Router.route('/add', function () {
 
 // ***** Start Meteor Location Conditionals *****
 if (Meteor.isClient) {
-
   Template.listSmiles.helpers({
     smiles: function () {
       return SmileList.find({}).fetch();
