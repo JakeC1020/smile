@@ -5,11 +5,48 @@ var alreadyRan = false;
 Router.route('/', function () {
   this.render('about');
 });
-Router.route('/about'), function () {
+Router.route('/about', function () {
     this.render('about');
-}
+});
 Router.route('/dashboard', function () {
   this.render('dashboard');
+  if (!alreadyRan) {
+      google.charts.load('current', {'packages':['bar']});  
+      alreadyRan = true;
+    }
+    // ***** Histogram *****
+    
+    google.charts.setOnLoadCallback(drawChart);
+    
+    function drawChart() {
+      timeArray = [];
+      SmileList.find().forEach(function(obj){
+        date = new Date(obj.time);
+        hours = date.getHours()+7;
+        found = false;
+        for (var i=0; i<timeArray.length; i++) {
+            if (timeArray[i][0][0] == hours) {
+                timeArray[i][1] += 1;
+                found = true;
+            }
+        }
+        if (!found) {
+            timeArray.push([[hours,0,0],1]);
+        }
+      });
+      data = new google.visualization.DataTable();
+      data.addColumn('timeofday', 'Time of Day');
+      data.addColumn('number', 'Number of smiles');
+      data.addRows(timeArray);
+      options = google.charts.Bar.convertOptions({
+        title: 'Number of smiles at each hour',
+        height: 450,
+        legend: { position: 'none' },
+        colors: ['#80DEEA']
+      });
+      chart = new google.charts.Bar(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
 });
 
 Router.route('/smile', function () {
@@ -58,11 +95,11 @@ if (Meteor.isClient) {
        return smiles;
       }
   });
-    Template.dashboard.events({
-        'click #dashboard': function() {
-            document.location.reload(true);
-        }
-    });
+  Template.dashboard.events({
+      'click #dashboard': function() {
+          document.location.reload(true);
+      }
+  });
   Template.editSmiles.events({
      'keyup [name=smileDescrip]': function (event) {
          var documentId = this._id;
@@ -72,38 +109,8 @@ if (Meteor.isClient) {
      }
   });
 
-  Template.dashboard.onRendered(function () {
-    // ***** Histogram *****
-  google.charts.setOnLoadCallback(drawChart);
-  function drawChart() {
-    timeArray = [];
-    SmileList.find().forEach(function(obj){
-      date = new Date(obj.time);
-      hours = date.getHours()+7;
-      found = false;
-      for (var i=0; i<timeArray.length; i++) {
-          if (timeArray[i][0][0] == hours) {
-              timeArray[i][1] += 1;
-              found = true;
-          }
-      }
-      if (!found) {
-          timeArray.push([[hours,0,0],1]);
-      }
-    });
-      data = new google.visualization.DataTable();
-      data.addColumn('timeofday', 'Time of Day');
-      data.addColumn('number', 'Number of smiles');
-      data.addRows(timeArray);
-      options = google.charts.Bar.convertOptions({
-        title: 'Number of smiles at each hour',
-        height: 450,
-        legend: { position: 'none' },
-        colors: ['#80DEEA']
-      });
-      chart = new google.charts.Bar(document.getElementById('chart_div'));
-      chart.draw(data, options);
-    }
+  Template.dashboard.onCreated(function () {
+    
   });
 
   Template.addSmileForm.onRendered(function () {
